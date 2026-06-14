@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Suppi's Shop Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 20px auto; padding: 10px; }
+        input, button { padding: 8px; margin: 5px; width: 95%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        .delete { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <h2>Suppi's Shop Inventory 🔥</h2>
+    <h4>Add New Product</h4>
+    <input type="text" id="name" placeholder="Product Name">
+    <input type="number" id="qty" placeholder="Quantity">
+    <input type="number" id="price" placeholder="Price ₹">
+    <button onclick="addProduct()">Add to Stock</button>
+    
+    <h4>Current Stock</h4>
+    <table id="stockTable">
+        <tr><th>Name</th><th>Qty</th><th>Price</th><th>Action</th></tr>
+    </table>
+
+    <script>
+        function loadStock() {
+            let stock = JSON.parse(localStorage.getItem('shopStock')) || [];
+            let table = document.getElementById('stockTable');
+            table.innerHTML = '<tr><th>Name</th><th>Qty</th><th>Price</th><th>Action</th></tr>';
+            stock.forEach((item, index) => {
+                table.innerHTML += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.qty}</td>
+                    <td>₹${item.price}</td>
+                    <td><button class="delete" onclick="deleteProduct(${index})">Delete</button></td>
+                </tr>`;
+            });
+        }
+
+        function addProduct() {
+            let name = document.getElementById('name').value;
+            let qty = document.getElementById('qty').value;
+            let price = document.getElementById('price').value;
+            if(!name || !qty || !price) { alert('Fill all fields'); return; }
+            
+            let stock = JSON.parse(localStorage.getItem('shopStock')) || [];
+            stock.push({name, qty, price});
+            localStorage.setItem('shopStock', JSON.stringify(stock));
+            
+            document.getElementById('name').value = '';
+            document.getElementById('qty').value = '';
+            document.getElementById('price').value = '';
+            loadStock();
+        }
+
+        function deleteProduct(index) {
+            let stock = JSON.parse(localStorage.getItem('shopStock')) || [];
+            stock.splice(index, 1);
+            localStorage.setItem('shopStock', JSON.stringify(stock));
+            loadStock();
+        }
+
+        loadStock();
+    </script>
+</body>
+</html>
+
